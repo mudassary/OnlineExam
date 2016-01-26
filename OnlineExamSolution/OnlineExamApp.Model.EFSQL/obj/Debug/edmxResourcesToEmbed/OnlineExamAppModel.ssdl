@@ -1,0 +1,268 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="OnlineExamAppDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Exam">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Title" Type="nvarchar" MaxLength="100" />
+    <Property Name="Category" Type="nvarchar" MaxLength="50" />
+    <Property Name="Description" Type="nvarchar" MaxLength="80" />
+    <Property Name="CreatedBy" Type="bigint" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="IsActive" Type="bit" />
+  </EntityType>
+  <EntityType Name="ExamDetail">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ExamHeaderID" Type="int" />
+    <Property Name="QuestionID" Type="int" />
+  </EntityType>
+  <EntityType Name="ProposedAnswer">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="AnswerText" Type="nvarchar" MaxLength="1000" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Question">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="QuestionText" Type="nvarchar" MaxLength="1000" Nullable="false" />
+  </EntityType>
+  <EntityType Name="QuestionAnswer">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="QuestionID" Type="int" />
+    <Property Name="AnswerID" Type="int" />
+  </EntityType>
+  <EntityType Name="QuestionProposedAnswer">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="QuestionID" Type="int" Nullable="false" />
+    <Property Name="ProposedAnswerID" Type="int" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FirstName" Type="nvarchar" MaxLength="15" />
+    <Property Name="LastName" Type="nvarchar" MaxLength="15" />
+    <Property Name="UserName" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="Password" Type="nvarchar" MaxLength="20" />
+  </EntityType>
+  <EntityType Name="UserResponseDetail">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserResponseHeaderID" Type="int" />
+    <Property Name="QuestionID" Type="int" />
+    <Property Name="AnswerID" Type="int" />
+  </EntityType>
+  <EntityType Name="UserResponseHeader">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserID" Type="int" />
+    <Property Name="ExamID" Type="int" />
+    <Property Name="AttemptedOn" Type="datetime" />
+  </EntityType>
+  <Association Name="FK_ExamDetail_Exam">
+    <End Role="Exam" Type="Self.Exam" Multiplicity="0..1" />
+    <End Role="ExamDetail" Type="Self.ExamDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Exam">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ExamDetail">
+        <PropertyRef Name="ExamHeaderID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ExamDetail_Question">
+    <End Role="Question" Type="Self.Question" Multiplicity="0..1" />
+    <End Role="ExamDetail" Type="Self.ExamDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Question">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ExamDetail">
+        <PropertyRef Name="QuestionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_QuestionAnswer_ProposedAnswer">
+    <End Role="ProposedAnswer" Type="Self.ProposedAnswer" Multiplicity="0..1" />
+    <End Role="QuestionAnswer" Type="Self.QuestionAnswer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProposedAnswer">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="QuestionAnswer">
+        <PropertyRef Name="AnswerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_QuestionAnswer_Question">
+    <End Role="Question" Type="Self.Question" Multiplicity="0..1" />
+    <End Role="QuestionAnswer" Type="Self.QuestionAnswer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Question">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="QuestionAnswer">
+        <PropertyRef Name="QuestionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_QuestionProposedAnswer_ProposedAnswer">
+    <End Role="ProposedAnswer" Type="Self.ProposedAnswer" Multiplicity="0..1" />
+    <End Role="QuestionProposedAnswer" Type="Self.QuestionProposedAnswer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProposedAnswer">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="QuestionProposedAnswer">
+        <PropertyRef Name="ProposedAnswerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_QuestionProposedAnswer_Question">
+    <End Role="Question" Type="Self.Question" Multiplicity="1" />
+    <End Role="QuestionProposedAnswer" Type="Self.QuestionProposedAnswer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Question">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="QuestionProposedAnswer">
+        <PropertyRef Name="QuestionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserResponseDetail_ProposedAnswer">
+    <End Role="ProposedAnswer" Type="Self.ProposedAnswer" Multiplicity="0..1" />
+    <End Role="UserResponseDetail" Type="Self.UserResponseDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProposedAnswer">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="UserResponseDetail">
+        <PropertyRef Name="AnswerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserResponseDetail_Question">
+    <End Role="Question" Type="Self.Question" Multiplicity="0..1" />
+    <End Role="UserResponseDetail" Type="Self.UserResponseDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Question">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="UserResponseDetail">
+        <PropertyRef Name="QuestionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserResponseDetail_UserResponseHeader">
+    <End Role="UserResponseHeader" Type="Self.UserResponseHeader" Multiplicity="0..1" />
+    <End Role="UserResponseDetail" Type="Self.UserResponseDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserResponseHeader">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="UserResponseDetail">
+        <PropertyRef Name="UserResponseHeaderID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserResponseHeader_Exam">
+    <End Role="Exam" Type="Self.Exam" Multiplicity="0..1" />
+    <End Role="UserResponseHeader" Type="Self.UserResponseHeader" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Exam">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="UserResponseHeader">
+        <PropertyRef Name="ExamID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserResponseHeader_User">
+    <End Role="User" Type="Self.User" Multiplicity="0..1" />
+    <End Role="UserResponseHeader" Type="Self.UserResponseHeader" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="UserResponseHeader">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="OnlineExamAppDBModelStoreContainer">
+    <EntitySet Name="Exam" EntityType="Self.Exam" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ExamDetail" EntityType="Self.ExamDetail" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ProposedAnswer" EntityType="Self.ProposedAnswer" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Question" EntityType="Self.Question" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="QuestionAnswer" EntityType="Self.QuestionAnswer" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="QuestionProposedAnswer" EntityType="Self.QuestionProposedAnswer" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserResponseDetail" EntityType="Self.UserResponseDetail" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserResponseHeader" EntityType="Self.UserResponseHeader" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_ExamDetail_Exam" Association="Self.FK_ExamDetail_Exam">
+      <End Role="Exam" EntitySet="Exam" />
+      <End Role="ExamDetail" EntitySet="ExamDetail" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ExamDetail_Question" Association="Self.FK_ExamDetail_Question">
+      <End Role="Question" EntitySet="Question" />
+      <End Role="ExamDetail" EntitySet="ExamDetail" />
+    </AssociationSet>
+    <AssociationSet Name="FK_QuestionAnswer_ProposedAnswer" Association="Self.FK_QuestionAnswer_ProposedAnswer">
+      <End Role="ProposedAnswer" EntitySet="ProposedAnswer" />
+      <End Role="QuestionAnswer" EntitySet="QuestionAnswer" />
+    </AssociationSet>
+    <AssociationSet Name="FK_QuestionAnswer_Question" Association="Self.FK_QuestionAnswer_Question">
+      <End Role="Question" EntitySet="Question" />
+      <End Role="QuestionAnswer" EntitySet="QuestionAnswer" />
+    </AssociationSet>
+    <AssociationSet Name="FK_QuestionProposedAnswer_ProposedAnswer" Association="Self.FK_QuestionProposedAnswer_ProposedAnswer">
+      <End Role="ProposedAnswer" EntitySet="ProposedAnswer" />
+      <End Role="QuestionProposedAnswer" EntitySet="QuestionProposedAnswer" />
+    </AssociationSet>
+    <AssociationSet Name="FK_QuestionProposedAnswer_Question" Association="Self.FK_QuestionProposedAnswer_Question">
+      <End Role="Question" EntitySet="Question" />
+      <End Role="QuestionProposedAnswer" EntitySet="QuestionProposedAnswer" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserResponseDetail_ProposedAnswer" Association="Self.FK_UserResponseDetail_ProposedAnswer">
+      <End Role="ProposedAnswer" EntitySet="ProposedAnswer" />
+      <End Role="UserResponseDetail" EntitySet="UserResponseDetail" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserResponseDetail_Question" Association="Self.FK_UserResponseDetail_Question">
+      <End Role="Question" EntitySet="Question" />
+      <End Role="UserResponseDetail" EntitySet="UserResponseDetail" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserResponseDetail_UserResponseHeader" Association="Self.FK_UserResponseDetail_UserResponseHeader">
+      <End Role="UserResponseHeader" EntitySet="UserResponseHeader" />
+      <End Role="UserResponseDetail" EntitySet="UserResponseDetail" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserResponseHeader_Exam" Association="Self.FK_UserResponseHeader_Exam">
+      <End Role="Exam" EntitySet="Exam" />
+      <End Role="UserResponseHeader" EntitySet="UserResponseHeader" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserResponseHeader_User" Association="Self.FK_UserResponseHeader_User">
+      <End Role="User" EntitySet="User" />
+      <End Role="UserResponseHeader" EntitySet="UserResponseHeader" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
